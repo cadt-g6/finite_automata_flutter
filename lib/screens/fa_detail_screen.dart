@@ -204,7 +204,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
       child: Column(
         children: [
           FaTextField(
-            hintText: "States. eg: q0,q1",
+            hintText: "Eg: q0,q1",
+            labelText: "States",
             initialValue: states.join(","),
             onChanged: (text) {
               List<String> value = text.split(",");
@@ -213,7 +214,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           ),
           const FaVerticalSpacing(),
           FaTextField(
-            hintText: "Symbols. eg: a,b,c",
+            hintText: "Eg: a,b,c",
+            labelText: "Symbols",
             initialValue: symbols.join(","),
             onChanged: (text) {
               List<String> value = text.split(",");
@@ -222,7 +224,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           ),
           const FaVerticalSpacing(),
           FaTextField(
-            hintText: "Initial State",
+            hintText: states.isNotEmpty ? "Eg. ${states.first}" : "Eg. q1",
+            labelText: "Initial State",
             initialValue: initialState,
             validator: (state) => validateState(state),
             onChanged: (text) {
@@ -231,7 +234,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           ),
           const FaVerticalSpacing(),
           FaTextField(
-            hintText: "Final State",
+            hintText: states.isNotEmpty ? "Eg. ${states.last}" : "Eg. q3",
+            labelText: "Final State",
             initialValue: finalState,
             validator: (state) => validateState(state),
             onChanged: (text) {

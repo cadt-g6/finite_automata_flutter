@@ -14,6 +14,13 @@ class ThemeConfig {
 
   ThemeData get() {
     ThemeData defaultTheme = isDarkMode ? ThemeData.dark() : ThemeData.light();
-    return defaultTheme.copyWith();
+    return defaultTheme.copyWith(
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          backgroundColor: defaultTheme.colorScheme.primary,
+          primary: defaultTheme.colorScheme.onPrimary,
+        ),
+      ),
+    );
   }
 }

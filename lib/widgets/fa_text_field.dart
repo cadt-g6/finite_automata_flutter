@@ -4,6 +4,7 @@ class FaTextField extends StatelessWidget {
   const FaTextField({
     Key? key,
     this.hintText,
+    required this.labelText,
     this.onChanged,
     this.validator,
     this.initialValue,
@@ -11,6 +12,7 @@ class FaTextField extends StatelessWidget {
 
   final String? initialValue;
   final String? hintText;
+  final String? labelText;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
 
@@ -22,6 +24,7 @@ class FaTextField extends StatelessWidget {
       initialValue: initialValue,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
+        labelText: labelText,
         hintText: hintText,
       ),
     );
