@@ -1,5 +1,7 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
+import 'package:finite_automata_flutter/services/toast_service.dart';
+import 'package:finite_automata_flutter/widgets/fa_feature_card.dart';
 import 'package:finite_automata_flutter/widgets/fa_text_field.dart';
 import 'package:finite_automata_flutter/widgets/fa_vertical_spacing.dart';
 import 'package:flutter/material.dart';
@@ -92,8 +94,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
     } else {
       message = "Validation fails";
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ToastService.showSnackbar(context: context, title: message);
   }
 
   String? validateState(String? state) {
@@ -113,13 +114,57 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         children: [
+          // basic info
           buildBasicInfosForm(),
           const FaVerticalSpacing(),
           buildResetTransitionButton(),
-          buildTransitionHeader(context),
+
+          // transitions
+          const FaHeader(title: "Transition"),
           buildTransitionTableForm(),
           const FaVerticalSpacing(),
           buildSaveFaButton(),
+
+          // features
+          const Divider(),
+          const FaHeader(title: "Features"),
+          buildFeatures(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildFeatures() {
+    bool enable = faModel?.firebaseDocumentId != null;
+    return Opacity(
+      opacity: enable ? 1.0 : 0.5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FaFeatureCard(
+            title: "Test if a FA is deterministic or non-deterministic",
+            subtitle: "b",
+            enable: enable,
+            onPressed: () {},
+          ),
+          FaFeatureCard(
+            title: "Test if a string is accepted by a FA",
+            subtitle: "c",
+            enable: enable,
+            onPressed: () {},
+          ),
+          FaFeatureCard(
+            title: "Construct an equivalent DFA from an NFA",
+            subtitle: "d",
+            enable: enable,
+            onPressed: () {},
+          ),
+          FaFeatureCard(
+            title: "Minimize a DFA",
+            subtitle: "e",
+            enable: enable,
+            onPressed: () {},
+          ),
         ],
       ),
     );
@@ -137,7 +182,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
     );
   }
 
-  Column buildResetTransitionButton() {
+  Widget buildResetTransitionButton() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -149,21 +194,6 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             }
           },
         ),
-      ],
-    );
-  }
-
-  Column buildTransitionHeader(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const FaVerticalSpacing(),
-        const FaVerticalSpacing(),
-        Text(
-          "Transition",
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        const FaVerticalSpacing(),
       ],
     );
   }
@@ -183,7 +213,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           ),
           const FaVerticalSpacing(),
           FaTextField(
-            hintText: "symbols. eg: a,b,c",
+            hintText: "Symbols. eg: a,b,c",
             initialValue: symbols.join(","),
             onChanged: (text) {
               List<String> value = text.split(",");
@@ -274,6 +304,30 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Text(alp),
           ),
+      ],
+    );
+  }
+}
+
+class FaHeader extends StatelessWidget {
+  const FaHeader({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const FaVerticalSpacing(mulitpleBy: 2),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        const FaVerticalSpacing(),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/screens/fa_detail_screen.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
+import 'package:finite_automata_flutter/services/toast_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -81,8 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         case OkCancelResult.ok:
                           await FaCloudService().delete(id: fa.firebaseDocumentId!);
                           await load();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text("Deleted * docID: ${fa.firebaseDocumentId!}")));
+                          ToastService.showSnackbar(
+                            context: context,
+                            title: "Deleted * docID: ${fa.firebaseDocumentId!}",
+                          );
                           break;
                         case OkCancelResult.cancel:
                           break;
