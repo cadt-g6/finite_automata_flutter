@@ -10,6 +10,8 @@ class FaModel {
   final String finalState;
   final Map<String, Map<String, List<String>>> transitions;
 
+  String? firebaseDocumentId;
+
   FaModel({
     required this.states,
     required this.symbols,

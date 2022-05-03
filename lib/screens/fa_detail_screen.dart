@@ -1,42 +1,84 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
+import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
 import 'package:finite_automata_flutter/widgets/fa_text_field.dart';
 import 'package:finite_automata_flutter/widgets/fa_vertical_spacing.dart';
 import 'package:flutter/material.dart';
 
 class FaDetailScreen extends StatefulWidget {
-  const FaDetailScreen({Key? key}) : super(key: key);
+  const FaDetailScreen({
+    Key? key,
+    this.faModel,
+  }) : super(key: key);
+
+  final FaModel? faModel;
 
   @override
   State<FaDetailScreen> createState() => _FaDetailScreenState();
 }
 
 class _FaDetailScreenState extends State<FaDetailScreen> {
-  List<String> states = ["q0", "q1", "q2", "q3"];
-  List<String> symbols = ["0", "1"];
+  FaModel? faModel;
 
-  String? initialState;
-  String? finalState;
-
-  Map<String, Map<String, List<String>>> transitions = {
-    // "q0": {
-    //   "0": ["q1"],
-    //   "1": ["q0"],
-    // },
-    // "q1": {
-    //   "0": ["q2"],
-    //   "1": ["q0"],
-    // },
-    // "q2": {
-    //   "0": ["q3"],
-    //   "1": ["q0"],
-    // },
-    // "q3": {
-    //   "0": ["q3"],
-    // }
-  };
+  @override
+  void initState() {
+    faModel = widget.faModel;
+    super.initState();
+  }
 
   final GlobalKey<FormState> basicInfosFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> transitionFormKey = GlobalKey<FormState>();
+
+  List<String> states = ["q0", "q1", "q2", "q3"];
+  List<String> symbols = ["0", "1"];
+
+  String? initialState = "q0";
+  String? finalState = "q3";
+
+  Map<String, Map<String, List<String>>> transitions = {
+    "q0": {
+      "0": ["q1"],
+      "1": ["q0"],
+    },
+    "q1": {
+      "0": ["q2"],
+      "1": ["q0"],
+    },
+    "q2": {
+      "0": ["q3"],
+      "1": ["q0"],
+    },
+    "q3": {
+      "0": ["q3"],
+      "1": ["q3"],
+    }
+  };
+
+  Future<void> onSaveFa() async {
+    if (basicInfosFormKey.currentState?.validate() == true && transitionFormKey.currentState?.validate() == true) {
+      if (faModel?.firebaseDocumentId != null) {
+        await FaCloudService().update(
+          id: faModel!.firebaseDocumentId!,
+          faModel: FaModel(
+            states: states,
+            symbols: symbols,
+            initialState: initialState!,
+            finalState: finalState!,
+            transitions: transitions,
+          ),
+        );
+      } else {
+        FaModel? result = await FaCloudService().create(FaModel(
+          states: states,
+          symbols: symbols,
+          initialState: initialState!,
+          finalState: finalState!,
+          transitions: transitions,
+        ));
+        faModel = result;
+        setState(() {});
+      }
+    }
+  }
 
   String? validateState(String? state) {
     if (states.contains(state)) {
@@ -50,7 +92,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add FA"),
+        title: Text("Add FA" + (faModel?.firebaseDocumentId != null ? " * Saved to firebase" : "")),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -73,18 +115,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
       children: [
         TextButton(
           child: const Text("Save FA"),
-          onPressed: () {
-            if (basicInfosFormKey.currentState?.validate() == true &&
-                transitionFormKey.currentState?.validate() == true) {
-              FaModel(
-                states: states,
-                symbols: symbols,
-                initialState: initialState!,
-                finalState: finalState!,
-                transitions: transitions,
-              );
-            }
-          },
+          onPressed: () => onSaveFa(),
         ),
       ],
     );
@@ -148,11 +179,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             initialValue: initialState,
             validator: (state) => validateState(state),
             onChanged: (text) {
-              if (validateState(text) != null) {
-                initialState = text;
-              } else {
-                initialState = null;
-              }
+              initialState = text;
             },
           ),
           const FaVerticalSpacing(),
@@ -161,11 +188,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             initialValue: finalState,
             validator: (state) => validateState(state),
             onChanged: (text) {
-              if (validateState(text) != null) {
-                finalState = text;
-              } else {
-                finalState = null;
-              }
+              finalState = text;
             },
           ),
         ],
