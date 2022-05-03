@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "826707397814",
+    "project_id": "finite-automata-cadt",
+    "storage_bucket": "finite-automata-cadt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826707397814:android:d9baaf5cefcbe7d44eaa17",
+        "android_client_info": {
+          "package_name": "com.example.finite_automata_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "826707397814-qkkik0dob5a91f9p6c2nd4ppbih1lecv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3l6B2w-X-ILqDzZtA5ouVGWgxgA1IsvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "826707397814-qkkik0dob5a91f9p6c2nd4ppbih1lecv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
