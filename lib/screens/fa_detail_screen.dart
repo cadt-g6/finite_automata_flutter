@@ -23,6 +23,14 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   void initState() {
     faModel = widget.faModel;
     super.initState();
+
+    if (faModel != null) {
+      states = faModel!.states;
+      symbols = faModel!.symbols;
+      initialState = faModel!.initialState;
+      finalState = faModel!.finalState;
+      transitions = faModel!.transitions;
+    }
   }
 
   final GlobalKey<FormState> basicInfosFormKey = GlobalKey<FormState>();
@@ -54,6 +62,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   };
 
   Future<void> onSaveFa() async {
+    String? message;
+
     if (basicInfosFormKey.currentState?.validate() == true && transitionFormKey.currentState?.validate() == true) {
       if (faModel?.firebaseDocumentId != null) {
         await FaCloudService().update(
@@ -66,6 +76,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             transitions: transitions,
           ),
         );
+        message = "Updated * docID: ${faModel?.firebaseDocumentId}";
       } else {
         FaModel? result = await FaCloudService().create(FaModel(
           states: states,
@@ -75,9 +86,14 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           transitions: transitions,
         ));
         faModel = result;
+        message = "Created * docID: ${faModel?.firebaseDocumentId}";
         setState(() {});
       }
+    } else {
+      message = "Validation fails";
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   String? validateState(String? state) {
@@ -139,6 +155,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
 
   Column buildTransitionHeader(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const FaVerticalSpacing(),
         const FaVerticalSpacing(),

@@ -8,3 +8,9 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 fvm flutter pub global activate flutterfire_cli
 flutterfire configure # then select finite_automata_cadt project
 ```
+
+## Deploy
+```s
+firebase init # choose hosting
+firebase deploy
+```

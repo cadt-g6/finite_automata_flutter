@@ -38,6 +38,7 @@ dependencies:
   json_serializable: ^6.2.0
   firebase_core: ^1.16.0
   cloud_firestore: ^3.1.14
+  adaptive_dialog: ^1.6.2+1
 
 dev_dependencies:
   flutter_test:
