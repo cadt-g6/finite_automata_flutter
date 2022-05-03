@@ -102,37 +102,28 @@ class _HomeScreenState extends State<HomeScreen> {
         FaPopMenuItem(
           title: "Delete",
           titleStyle: TextStyle(color: Theme.of(context).colorScheme.error),
-          onPressed: () {
-            buildFaDeleteButton(context, fa);
+          onPressed: () async {
+            final result = await showOkCancelAlertDialog(
+              context: context,
+              title: "Are you sure to delete?",
+              message: "You can't undo this action.",
+              isDestructiveAction: true,
+            );
+            switch (result) {
+              case OkCancelResult.ok:
+                await FaCloudService().delete(id: fa.firebaseDocumentId!);
+                await load();
+                ToastService.showSnackbar(
+                  context: context,
+                  title: "Deleted * docID: ${fa.firebaseDocumentId!}",
+                );
+                break;
+              case OkCancelResult.cancel:
+                break;
+            }
           },
         ),
     ];
-  }
-
-  Widget buildFaDeleteButton(BuildContext context, FaModel fa) {
-    return IconButton(
-      icon: const Icon(Icons.delete),
-      onPressed: () async {
-        final result = await showOkCancelAlertDialog(
-          context: context,
-          title: "Are you sure to delete?",
-          message: "You can't undo this action.",
-          isDestructiveAction: true,
-        );
-        switch (result) {
-          case OkCancelResult.ok:
-            await FaCloudService().delete(id: fa.firebaseDocumentId!);
-            await load();
-            ToastService.showSnackbar(
-              context: context,
-              title: "Deleted * docID: ${fa.firebaseDocumentId!}",
-            );
-            break;
-          case OkCancelResult.cancel:
-            break;
-        }
-      },
-    );
   }
 
   AppBar buildAppBar(BuildContext context) {
