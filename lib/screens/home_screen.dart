@@ -1,11 +1,12 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:finite_automata_flutter/app.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/screens/fa_detail_screen.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
 import 'package:finite_automata_flutter/services/toast_service.dart';
+import 'package:finite_automata_flutter/widgets/fa_popup_menu_button.dart';
 import 'package:finite_automata_flutter/widgets/fa_toggle_theme_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_json_viewer/flutter_json_viewer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -45,7 +46,18 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: fas.length,
       itemBuilder: (context, index) {
         final fa = fas[index];
+        return buildFaItem(context, fa);
+      },
+    );
+  }
+
+  Widget buildFaItem(BuildContext context, FaModel fa) {
+    return FaPopupMenuButton(
+      dxGetter: (dx) => dx + MediaQuery.of(context).size.width,
+      items: (context) => buildFaTileOptions(context, fa),
+      builder: (callback) {
         return ListTile(
+          trailing: IconButton(icon: const Icon(Icons.more_vert), onPressed: callback),
           title: Text("States: ${fa.states.join(",")}"),
           subtitle: Text("Symbols: ${fa.symbols.join(",")}"),
           onTap: () {
@@ -55,10 +67,46 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
             );
           },
-          trailing: fa.firebaseDocumentId != null ? buildFaDeleteButton(context, fa) : null,
         );
       },
     );
+  }
+
+  List<FaPopMenuItem> buildFaTileOptions(BuildContext context, FaModel fa) {
+    return [
+      FaPopMenuItem(
+        title: "Open Editor",
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              return FaDetailScreen(faModel: fa);
+            }),
+          );
+        },
+      ),
+      FaPopMenuItem(
+        title: "View in JSON",
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("DocID: ${fa.firebaseDocumentId}"),
+                content: JsonViewer(fa.toJson()),
+              );
+            },
+          );
+        },
+      ),
+      if (fa.firebaseDocumentId != null)
+        FaPopMenuItem(
+          title: "Delete",
+          titleStyle: TextStyle(color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            buildFaDeleteButton(context, fa);
+          },
+        ),
+    ];
   }
 
   Widget buildFaDeleteButton(BuildContext context, FaModel fa) {
@@ -93,6 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
       actions: [
         IconButton(
           icon: const Icon(Icons.add),
+          tooltip: "Add new FA",
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) {
@@ -103,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
+          tooltip: "Reload list",
           onPressed: () {
             load();
           },

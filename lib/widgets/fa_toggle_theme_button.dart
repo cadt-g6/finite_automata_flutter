@@ -17,6 +17,7 @@ class _FaToggleThemeButtonState extends State<FaToggleThemeButton> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: App.of(context)?.isDarkMode == true ? const Icon(Icons.dark_mode) : const Icon(Icons.light_mode),
+      tooltip: "Toggle theme mode",
       onPressed: () {
         setState(() {
           App.of(context)?.toggleDarkMode();
