@@ -1,12 +1,8 @@
-// states: q0,q1,q2
-// alphabets: 0,1
-// transition:
-// {
-//   "q0": {
-//     "0": ["q0"],
-//     "1": ["q0"],
-//   },
-// };
+import 'package:json_annotation/json_annotation.dart';
+
+part 'fa_model.g.dart';
+
+@JsonSerializable()
 class FaModel {
   final List<String> states;
   final List<String> symbols;
@@ -21,4 +17,17 @@ class FaModel {
     required this.finalState,
     required this.transitions,
   });
+
+  factory FaModel.fromJson(Map<String, dynamic> json) => _$FaModelFromJson(json);
+  Map<String, dynamic> toJson() => _$FaModelToJson(this);
 }
+
+// states: q0,q1,q2
+// alphabets: 0,1
+// transition:
+// {
+//   "q0": {
+//     "0": ["q0"],
+//     "1": ["q0"],
+//   },
+// };
