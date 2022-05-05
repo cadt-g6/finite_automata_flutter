@@ -11,6 +11,16 @@ class FaModel {
   final List<String> symbols;
   final String initialState;
   final List<String> finalState;
+
+  /// ```dart
+  /// final transitions = {
+  ///   "q0": {
+  ///     "0": ["q1"],
+  ///     "1": ["q3"]
+  ///   },
+  ///   ...
+  /// }
+  /// ```
   final Map<String, Map<String, List<String>>> transitions;
 
   @JsonKey(ignore: true)

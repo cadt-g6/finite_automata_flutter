@@ -12,42 +12,36 @@ void main() {
       "final_state": ["q2"],
       "transitions": {
         "q7": {
-          "a": ["q6"],
-          "b": ["q2"]
-        },
-        "q5": {
-          "a": ["q2"],
-          "b": ["q6"]
-        },
-        "q3": {
-          "0": ["q3"],
-          "1": ["q3"],
-          "a": ["q2"],
-          "b": ["q6"]
-        },
-        "q2": {
-          "0": ["q3"],
-          "1": ["q0"],
-          "a": ["q0"],
-          "b": ["q2"]
-        },
-        "q4": {
-          "a": ["q7"],
-          "b": ["q5"]
-        },
-        "q0": {
-          "0": ["q1"],
-          "1": ["q0"],
-          "a": ["q1"],
-          "b": ["q5"]
+          "b": ["q2"],
+          "a": ["q6"]
         },
         "q1": {
           "b": ["q2"],
           "a": ["q6"]
         },
+        "q0": {
+          "a": ["q1"],
+          "b": ["q5"]
+        },
         "q6": {
-          "b": ["q4"],
-          "a": ["q6"]
+          "a": ["q6"],
+          "b": ["q4"]
+        },
+        "q3": {
+          "b": ["q6"],
+          "a": ["q2"]
+        },
+        "q4": {
+          "a": ["q7"],
+          "b": ["q5"]
+        },
+        "q5": {
+          "a": ["q2"],
+          "b": ["q6"]
+        },
+        "q2": {
+          "b": ["q2"],
+          "a": ["q0"]
         }
       }
     });
@@ -60,7 +54,7 @@ void main() {
         expect("q0,q1,q2,q3,q4,q5,q6,q7", fa.states.join(","));
         expect("q0,q1,q2,q4,q5,q6,q7", accessibleStates.join(","));
       });
-    });
+    }, skip: true);
 
     test('removeNoneAccessibleStates', () {
       test('it assign new value to transition & states', () {
@@ -69,6 +63,11 @@ void main() {
         expect("q0,q1,q2,q4,q5,q6,q7", newFa.states.join(","));
         expect("q7,q5,q2,q4,q0,q1,q6", newFa.transitions.keys.join(","));
       });
+    }, skip: true);
+
+    // TODO: Complete Step 2
+    test('minialDFA', () {
+      final newFa = service.minialDFA();
     });
   });
 
@@ -112,12 +111,16 @@ void main() {
         "q0,q1,q2,q3,q4",
         accessibleStates.join(","),
       );
-    });
+    }, skip: true);
 
     test('removeNoneAccessibleStates', () {
       final newFa = service.removeNoneAccessibleStates(fa);
       expect("q0,q1,q2,q3,q4", fa.transitions.keys.join(","));
       expect("q0,q1,q2,q3,q4", newFa.transitions.keys.join(","));
+    }, skip: true);
+
+    test('minialDFA', () {
+      final newFa = service.minialDFA();
     });
   });
 }

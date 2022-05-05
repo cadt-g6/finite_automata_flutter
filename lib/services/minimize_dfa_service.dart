@@ -1,5 +1,6 @@
+import 'package:finite_automata_flutter/helpers/fa_helper.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
-import 'dart:collection';
+import 'package:finite_automata_flutter/services/minimize_dfa/step2_minimize_dfa.dart';
 
 class MinimizeDFAService {
   FaModel fa;
@@ -7,6 +8,7 @@ class MinimizeDFAService {
 
   FaModel minialDFA() {
     fa = removeNoneAccessibleStates(fa);
+    fa = Step2MinimizeDfa(fa).exec();
     return fa;
   }
 
@@ -29,10 +31,6 @@ class MinimizeDFAService {
   Set<String> findNextStateFromSingleState(String state) {
     List<String>? states = fa.transitions[state]?.values.map((e) => e.join(",")).join(",").split(",");
     return states?.toSet() ?? {};
-  }
-
-  Set<String> sortStates(Set<String> states) {
-    return SplayTreeSet<String>.from(states, (a, b) => a.compareTo(b)).toSet();
   }
 
   Set<String> findNextStates(
@@ -73,6 +71,6 @@ class MinimizeDFAService {
     }
 
     accessibleStates.addAll(states);
-    return sortStates(accessibleStates);
+    return FaHelper.sortStates(accessibleStates);
   }
 }
