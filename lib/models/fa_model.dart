@@ -4,15 +4,18 @@ part 'fa_model.g.dart';
 
 @JsonSerializable()
 class FaModel {
+  final String? title;
   final List<String> states;
   final List<String> symbols;
   final String initialState;
-  final String finalState;
+  final List<String> finalState;
   final Map<String, Map<String, List<String>>> transitions;
 
+  @JsonKey(ignore: true)
   String? firebaseDocumentId;
 
   FaModel({
+    required this.title,
     required this.states,
     required this.symbols,
     required this.initialState,

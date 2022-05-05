@@ -7,12 +7,15 @@ part of 'fa_model.dart';
 // **************************************************************************
 
 FaModel _$FaModelFromJson(Map<String, dynamic> json) => FaModel(
+      title: json['title'] as String?,
       states:
           (json['states'] as List<dynamic>).map((e) => e as String).toList(),
       symbols:
           (json['symbols'] as List<dynamic>).map((e) => e as String).toList(),
       initialState: json['initial_state'] as String,
-      finalState: json['final_state'] as String,
+      finalState: (json['final_state'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       transitions: (json['transitions'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(
             k,
@@ -24,6 +27,7 @@ FaModel _$FaModelFromJson(Map<String, dynamic> json) => FaModel(
     );
 
 Map<String, dynamic> _$FaModelToJson(FaModel instance) => <String, dynamic>{
+      'title': instance.title,
       'states': instance.states,
       'symbols': instance.symbols,
       'initial_state': instance.initialState,

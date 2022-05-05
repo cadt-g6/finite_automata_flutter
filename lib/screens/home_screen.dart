@@ -58,14 +58,21 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (callback) {
         return ListTile(
           trailing: IconButton(icon: const Icon(Icons.more_vert), onPressed: callback),
-          title: Text("States: ${fa.states.join(",")}"),
-          subtitle: Text("Symbols: ${fa.symbols.join(",")}"),
-          onTap: () {
-            Navigator.of(context).push(
+          title: Text(fa.title ?? "NA"),
+          isThreeLine: true,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("States: ${fa.states.join(",")}. Symbols: ${fa.symbols.join(",")}"),
+            ],
+          ),
+          onTap: () async {
+            await Navigator.of(context).push(
               MaterialPageRoute(builder: (context) {
                 return FaDetailScreen(faModel: fa);
               }),
             );
+            load();
           },
         );
       },

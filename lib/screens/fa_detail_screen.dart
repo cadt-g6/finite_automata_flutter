@@ -1,5 +1,6 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
+import 'package:finite_automata_flutter/services/fa_service.dart';
 import 'package:finite_automata_flutter/services/toast_service.dart';
 import 'package:finite_automata_flutter/widgets/fa_feature_card.dart';
 import 'package:finite_automata_flutter/widgets/fa_text_field.dart';
@@ -27,6 +28,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
     super.initState();
 
     if (faModel != null) {
+      title = faModel!.title;
       states = faModel!.states;
       symbols = faModel!.symbols;
       initialState = faModel!.initialState;
@@ -41,8 +43,9 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   List<String> states = ["q0", "q1", "q2", "q3"];
   List<String> symbols = ["0", "1"];
 
+  String? title = "Finite Automata";
   String? initialState = "q0";
-  String? finalState = "q3";
+  List<String> finalState = ["q3"];
 
   Map<String, Map<String, List<String>>> transitions = {
     "q0": {
@@ -71,20 +74,22 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
         await FaCloudService().update(
           id: faModel!.firebaseDocumentId!,
           faModel: FaModel(
+            title: title,
             states: states,
             symbols: symbols,
             initialState: initialState!,
-            finalState: finalState!,
+            finalState: finalState,
             transitions: transitions,
           ),
         );
         message = "Updated * docID: ${faModel?.firebaseDocumentId}";
       } else {
         FaModel? result = await FaCloudService().create(FaModel(
+          title: title,
           states: states,
           symbols: symbols,
           initialState: initialState!,
-          finalState: finalState!,
+          finalState: finalState,
           transitions: transitions,
         ));
         faModel = result;
@@ -109,7 +114,13 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add FA" + (faModel?.firebaseDocumentId != null ? " * Saved to firebase" : "")),
+        title: TextFormField(
+          initialValue: title,
+          decoration: const InputDecoration(border: InputBorder.none),
+          onChanged: (text) {
+            title = text;
+          },
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -236,10 +247,10 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           FaTextField(
             hintText: states.isNotEmpty ? "Eg. ${states.last}" : "Eg. q3",
             labelText: "Final State",
-            initialValue: finalState,
-            validator: (state) => validateState(state),
+            initialValue: finalState.join(","),
+            validator: (state) => validateMultipleStates(state),
             onChanged: (text) {
-              finalState = text;
+              finalState = text.split(",");
             },
           ),
         ],
@@ -266,10 +277,11 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
                     initialValue: transitions[state]?[symbol]?.join(","),
                     validator: (states) => validateMultipleStates(states),
                     onChanged: (states) {
+                      if (transitions[state] == null) transitions[state] = {};
                       if (validateMultipleStates(states) == null) {
-                        transitions[state]?[symbol] = states.split(",");
+                        transitions[state]![symbol] = states.split(",");
                       } else {
-                        transitions[state]?[symbol] = [];
+                        transitions[state]![symbol] = [];
                       }
                     },
                     decoration: const InputDecoration(
