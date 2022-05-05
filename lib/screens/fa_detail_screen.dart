@@ -1,6 +1,6 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
-import 'package:finite_automata_flutter/services/fa_service.dart';
+import 'package:finite_automata_flutter/services/minimize_dfa_service.dart';
 import 'package:finite_automata_flutter/services/toast_service.dart';
 import 'package:finite_automata_flutter/widgets/fa_feature_card.dart';
 import 'package:finite_automata_flutter/widgets/fa_text_field.dart';
@@ -174,7 +174,12 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             title: "Minimize a DFA",
             subtitle: "e",
             enable: enable,
-            onPressed: () {},
+            onPressed: () async {
+              // await onSaveFa();
+              if (faModel != null) {
+                MinimizeDFAService(faModel!).minialDFA();
+              }
+            },
           ),
         ],
       ),

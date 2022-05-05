@@ -1,7 +1,9 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'fa_model.g.dart';
 
+@CopyWith()
 @JsonSerializable()
 class FaModel {
   final String? title;
@@ -14,6 +16,20 @@ class FaModel {
   @JsonKey(ignore: true)
   String? firebaseDocumentId;
 
+  void validateSymbols() {
+    Map<String, Map<String, List<String>>> validatedTransition = {};
+    for (final transition in transitions.entries) {
+      validatedTransition[transition.key] = {};
+      for (final symbolsMap in transition.value.entries) {
+        if (symbols.contains(symbolsMap.key)) {
+          validatedTransition[transition.key]?[symbolsMap.key] = symbolsMap.value;
+        }
+      }
+    }
+    transitions.clear();
+    transitions.addAll(validatedTransition);
+  }
+
   FaModel({
     required this.title,
     required this.states,
@@ -21,18 +37,10 @@ class FaModel {
     required this.initialState,
     required this.finalState,
     required this.transitions,
-  });
+  }) {
+    validateSymbols();
+  }
 
   factory FaModel.fromJson(Map<String, dynamic> json) => _$FaModelFromJson(json);
   Map<String, dynamic> toJson() => _$FaModelToJson(this);
 }
-
-// states: q0,q1,q2
-// alphabets: 0,1
-// transition:
-// {
-//   "q0": {
-//     "0": ["q0"],
-//     "1": ["q0"],
-//   },
-// };

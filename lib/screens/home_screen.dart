@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/screens/fa_detail_screen.dart';
@@ -6,6 +8,7 @@ import 'package:finite_automata_flutter/services/toast_service.dart';
 import 'package:finite_automata_flutter/widgets/fa_popup_menu_button.dart';
 import 'package:finite_automata_flutter/widgets/fa_toggle_theme_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_json_viewer/flutter_json_viewer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -81,6 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<FaPopMenuItem> buildFaTileOptions(BuildContext context, FaModel fa) {
     return [
+      FaPopMenuItem(
+        title: "Copy as JSON",
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: jsonEncode(fa.toJson())));
+        },
+      ),
       FaPopMenuItem(
         title: "Open Editor",
         onPressed: () {
