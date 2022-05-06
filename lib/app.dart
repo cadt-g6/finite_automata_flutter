@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:finite_automata_flutter/configs/theme_config.dart';
 import 'package:finite_automata_flutter/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +30,19 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final botToastBuilder = BotToastInit();
     return MaterialApp(
+      navigatorObservers: [BotToastNavigatorObserver()],
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeConfig.light().get(),
       darkTheme: ThemeConfig.dark().get(),
       home: const HomeScreen(),
+      builder: (context, child) {
+        child = botToastBuilder(context, child);
+        return child;
+      },
     );
   }
 }

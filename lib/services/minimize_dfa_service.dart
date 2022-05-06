@@ -4,11 +4,17 @@ import 'package:finite_automata_flutter/services/minimize_dfa/step2_minimize_dfa
 
 class MinimizeDFAService {
   FaModel fa;
+  Step2MinimizeDfa? cachedStep2Service;
   MinimizeDFAService(this.fa);
 
   FaModel minialDFA() {
     fa = removeNoneAccessibleStates(fa);
-    fa = Step2MinimizeDfa(fa).exec();
+    return fa;
+  }
+
+  FaModel step2(FaModel fa) {
+    cachedStep2Service = Step2MinimizeDfa(fa);
+    fa = cachedStep2Service!.exec();
     return fa;
   }
 

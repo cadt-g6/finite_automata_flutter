@@ -1,4 +1,5 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
+import 'package:finite_automata_flutter/screens/minimize_dfa_screen.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
 import 'package:finite_automata_flutter/services/minimize_dfa_service.dart';
 import 'package:finite_automata_flutter/services/toast_service.dart';
@@ -175,9 +176,11 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             subtitle: "e",
             enable: enable,
             onPressed: () async {
-              // await onSaveFa();
               if (faModel != null) {
-                MinimizeDFAService(faModel!).minialDFA();
+                onSaveFa();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  return MinimizeDFAScreen(fa: faModel!);
+                }));
               }
             },
           ),

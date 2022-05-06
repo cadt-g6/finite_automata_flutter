@@ -1,12 +1,17 @@
 import 'package:finite_automata_flutter/helpers/fa_helper.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 class Step2MinimizeDfa {
   Step2MinimizeDfa(this.fa) : assert(fa.finalState.length == 1);
   final FaModel fa;
 
+  Set<String>? mergedEqualStates;
+
   FaModel exec() {
+    mergedEqualStates = null;
+
     // 1st next iteration
     final List<Set<String>> firstItrResult = firstIteration();
 
@@ -15,8 +20,8 @@ class Step2MinimizeDfa {
     final Set<String> statesSets = firstItrResult[1];
 
     // 2nd next iteration
-    final Set<String> mergedEqualStates = findEqualStates(markedSets, statesSets);
-    final nextItrResult = getNewTransitionsInfoWith(mergedEqualStates);
+    mergedEqualStates = findEqualStates(markedSets, statesSets);
+    final nextItrResult = getNewTransitionsInfoWith(mergedEqualStates!);
 
     Map<String, Map<String, List<String>>> transitions = nextItrResult[0];
     String initialState = nextItrResult[1];
@@ -64,7 +69,7 @@ class Step2MinimizeDfa {
       print("ALL PAIR: $statesSets");
       print("ALL MARKED: $markedSets");
       print("ALL EQUAL: $equalPairStates");
-      print("NEW STATES GROUP: $mergedEqualStates");
+      print("NEW STATES GROUP: ${mergedEqualStates.mapIndexed((index, element) => "q$index': $element")}");
       print("\n");
     }
 
@@ -86,12 +91,17 @@ class Step2MinimizeDfa {
       }
 
       for (String symbol in fa.symbols) {
-        List<String> nextStatesList = [];
+        Set<String> nextStatesList = {};
         for (String state in states) {
           String? nextStates = fa.transitions[state]?[symbol]?.join(",");
-          if (nextStates != null) nextStatesList.add(nextStates);
+          for (String _state in nextStates?.split(",") ?? []) {
+            int index = mergedEqualStates.toList().indexWhere((element) {
+              return element.split(",").contains(_state);
+            });
+            nextStatesList.add("q$index'");
+          }
         }
-        transitions[key]?[symbol] = nextStatesList;
+        transitions[key]?[symbol] = nextStatesList.join(",").split(",");
       }
 
       // find initialState
