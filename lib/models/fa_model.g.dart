@@ -7,9 +7,9 @@ part of 'fa_model.dart';
 // **************************************************************************
 
 abstract class _$FaModelCWProxy {
-  FaModel finalState(List<String> finalState);
+  FaModel finalStates(List<String> finalStates);
 
-  FaModel initialState(String initialState);
+  FaModel startState(String startState);
 
   FaModel states(List<String> states);
 
@@ -26,8 +26,8 @@ abstract class _$FaModelCWProxy {
   /// FaModel(...).copyWith(id: 12, name: "My name")
   /// ````
   FaModel call({
-    List<String>? finalState,
-    String? initialState,
+    List<String>? finalStates,
+    String? startState,
     List<String>? states,
     List<String>? symbols,
     String? title,
@@ -42,10 +42,11 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
   const _$FaModelCWProxyImpl(this._value);
 
   @override
-  FaModel finalState(List<String> finalState) => this(finalState: finalState);
+  FaModel finalStates(List<String> finalStates) =>
+      this(finalStates: finalStates);
 
   @override
-  FaModel initialState(String initialState) => this(initialState: initialState);
+  FaModel startState(String startState) => this(startState: startState);
 
   @override
   FaModel states(List<String> states) => this(states: states);
@@ -69,24 +70,24 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
   /// FaModel(...).copyWith(id: 12, name: "My name")
   /// ````
   FaModel call({
-    Object? finalState = const $CopyWithPlaceholder(),
-    Object? initialState = const $CopyWithPlaceholder(),
+    Object? finalStates = const $CopyWithPlaceholder(),
+    Object? startState = const $CopyWithPlaceholder(),
     Object? states = const $CopyWithPlaceholder(),
     Object? symbols = const $CopyWithPlaceholder(),
     Object? title = const $CopyWithPlaceholder(),
     Object? transitions = const $CopyWithPlaceholder(),
   }) {
     return FaModel(
-      finalState:
-          finalState == const $CopyWithPlaceholder() || finalState == null
-              ? _value.finalState
+      finalStates:
+          finalStates == const $CopyWithPlaceholder() || finalStates == null
+              ? _value.finalStates
               // ignore: cast_nullable_to_non_nullable
-              : finalState as List<String>,
-      initialState:
-          initialState == const $CopyWithPlaceholder() || initialState == null
-              ? _value.initialState
+              : finalStates as List<String>,
+      startState:
+          startState == const $CopyWithPlaceholder() || startState == null
+              ? _value.startState
               // ignore: cast_nullable_to_non_nullable
-              : initialState as String,
+              : startState as String,
       states: states == const $CopyWithPlaceholder() || states == null
           ? _value.states
           // ignore: cast_nullable_to_non_nullable
@@ -123,8 +124,8 @@ FaModel _$FaModelFromJson(Map<String, dynamic> json) => FaModel(
           (json['states'] as List<dynamic>).map((e) => e as String).toList(),
       symbols:
           (json['symbols'] as List<dynamic>).map((e) => e as String).toList(),
-      initialState: json['initial_state'] as String,
-      finalState: (json['final_state'] as List<dynamic>)
+      startState: json['start_state'] as String,
+      finalStates: (json['final_states'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
       transitions: (json['transitions'] as Map<String, dynamic>).map(
@@ -141,7 +142,7 @@ Map<String, dynamic> _$FaModelToJson(FaModel instance) => <String, dynamic>{
       'title': instance.title,
       'states': instance.states,
       'symbols': instance.symbols,
-      'initial_state': instance.initialState,
-      'final_state': instance.finalState,
+      'start_state': instance.startState,
+      'final_states': instance.finalStates,
       'transitions': instance.transitions,
     };

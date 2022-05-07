@@ -61,8 +61,8 @@ class MinimizeDFAService {
   }
 
   Set<String> findAccessibleStates() {
-    Set<String> accessibleStates = {fa.initialState};
-    Set<String> states = findNextStateFromSingleState(fa.initialState);
+    Set<String> accessibleStates = {fa.startState};
+    Set<String> states = findNextStateFromSingleState(fa.startState);
     Set<String> setStatesFounds = {};
 
     while (!isAllAccessible(states, accessibleStates)) {

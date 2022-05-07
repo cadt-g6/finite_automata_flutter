@@ -1,7 +1,6 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/screens/minimize_dfa_screen.dart';
 import 'package:finite_automata_flutter/services/fa_cloud_service.dart';
-import 'package:finite_automata_flutter/services/minimize_dfa_service.dart';
 import 'package:finite_automata_flutter/services/toast_service.dart';
 import 'package:finite_automata_flutter/widgets/fa_feature_card.dart';
 import 'package:finite_automata_flutter/widgets/fa_text_field.dart';
@@ -32,8 +31,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
       title = faModel!.title;
       states = faModel!.states;
       symbols = faModel!.symbols;
-      initialState = faModel!.initialState;
-      finalState = faModel!.finalState;
+      startState = faModel!.startState;
+      finalStates = faModel!.finalStates;
       transitions = faModel!.transitions;
     }
   }
@@ -45,8 +44,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
   List<String> symbols = ["0", "1"];
 
   String? title = "Finite Automata";
-  String? initialState = "q0";
-  List<String> finalState = ["q3"];
+  String? startState = "q0";
+  List<String> finalStates = ["q3"];
 
   Map<String, Map<String, List<String>>> transitions = {
     "q0": {
@@ -78,8 +77,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             title: title,
             states: states,
             symbols: symbols,
-            initialState: initialState!,
-            finalState: finalState,
+            startState: startState!,
+            finalStates: finalStates,
             transitions: transitions,
           ),
         );
@@ -89,8 +88,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           title: title,
           states: states,
           symbols: symbols,
-          initialState: initialState!,
-          finalState: finalState,
+          startState: startState!,
+          finalStates: finalStates,
           transitions: transitions,
         ));
         faModel = result;
@@ -245,20 +244,20 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           FaTextField(
             hintText: states.isNotEmpty ? "Eg. ${states.first}" : "Eg. q1",
             labelText: "Initial State",
-            initialValue: initialState,
+            initialValue: startState,
             validator: (state) => validateState(state),
             onChanged: (text) {
-              initialState = text;
+              startState = text;
             },
           ),
           const FaVerticalSpacing(),
           FaTextField(
             hintText: states.isNotEmpty ? "Eg. ${states.last}" : "Eg. q3",
             labelText: "Final State",
-            initialValue: finalState.join(","),
+            initialValue: finalStates.join(","),
             validator: (state) => validateMultipleStates(state),
             onChanged: (text) {
-              finalState = text.split(",");
+              finalStates = text.split(",");
             },
           ),
         ],

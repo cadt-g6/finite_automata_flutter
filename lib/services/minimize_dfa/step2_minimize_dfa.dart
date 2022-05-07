@@ -19,33 +19,30 @@ class Step2MinimizeDfa {
     final Set<String> markedSets = firstItrResult[0];
     final Set<String> statesSets = firstItrResult[1];
 
-    print("V1 MARKED: $markedSets");
-
     // 2nd next iteration
     mergedEqualStates = findEqualStates(markedSets, statesSets);
     final nextItrResult = getNewTransitionsInfoWith(mergedEqualStates!);
 
     Map<String, Map<String, List<String>>> transitions = nextItrResult[0];
-    String initialState = nextItrResult[1];
+    String startState = nextItrResult[1];
     List<String> finalStates = nextItrResult[2];
 
     return fa.copyWith(
       states: transitions.keys.toList(),
-      initialState: initialState,
-      finalState: finalStates,
+      startState: startState,
+      finalStates: finalStates,
       transitions: transitions,
     );
   }
 
   bool allInFinalState(Set<String> state) {
-    return state.where((e) => fa.finalState.contains(e)).length == state.length;
+    return state.where((e) => fa.finalStates.contains(e)).length == state.length;
   }
 
   List<Set<String>> firstIteration() {
     final Set<String> markedSets = {};
     final Set<String> statesSets = {};
 
-    print("ONCE: ${fa.finalState}");
     for (String stateR in fa.states) {
       for (String stateC in fa.states) {
         if (stateR != stateC) {
@@ -53,7 +50,7 @@ class Step2MinimizeDfa {
           String states = FaHelper.constructStates(sets);
           statesSets.add(states);
 
-          for (String fstate in fa.finalState) {
+          for (String fstate in fa.finalStates) {
             if (sets.contains(fstate)) {
               if (!allInFinalState(sets)) {
                 markedSets.add(states);
@@ -63,8 +60,6 @@ class Step2MinimizeDfa {
         }
       }
     }
-
-    print("FIRST: $markedSets");
 
     return [markedSets, statesSets];
   }
@@ -91,7 +86,7 @@ class Step2MinimizeDfa {
 
   List<dynamic> getNewTransitionsInfoWith(Set<String> mergedEqualStates) {
     Map<String, Map<String, List<String>>> transitions = {};
-    String initialState = "";
+    String startState = "";
     List<String> finalStates = [];
 
     for (int i = 0; i < mergedEqualStates.length; i++) {
@@ -117,13 +112,13 @@ class Step2MinimizeDfa {
         transitions[key]?[symbol] = nextStatesList.join(",").split(",");
       }
 
-      // find initialState
-      if (states.contains(fa.initialState)) {
-        initialState = key;
+      // find startState
+      if (states.contains(fa.startState)) {
+        startState = key;
       }
 
       // find finalStates
-      for (String state in fa.finalState) {
+      for (String state in fa.finalStates) {
         if (states.contains(state)) {
           finalStates.add(key);
         }
@@ -132,7 +127,7 @@ class Step2MinimizeDfa {
 
     return [
       transitions,
-      initialState,
+      startState,
       finalStates,
     ];
   }

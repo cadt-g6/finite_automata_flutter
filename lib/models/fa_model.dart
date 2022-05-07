@@ -9,8 +9,8 @@ class FaModel {
   final String? title;
   final List<String> states;
   final List<String> symbols;
-  final String initialState;
-  final List<String> finalState;
+  final String startState;
+  final List<String> finalStates;
 
   /// ```dart
   /// final transitions = {
@@ -44,8 +44,8 @@ class FaModel {
     required this.title,
     required this.states,
     required this.symbols,
-    required this.initialState,
-    required this.finalState,
+    required this.startState,
+    required this.finalStates,
     required this.transitions,
   }) {
     validateSymbols();
