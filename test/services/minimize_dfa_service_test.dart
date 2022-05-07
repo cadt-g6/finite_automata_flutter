@@ -73,31 +73,35 @@ void main() {
 
   group('MinimizeDFAService: All states are accessible', () {
     final fa = FaModel.fromJson({
-      "title": "Minimal DFA",
-      "states": ["q0", "q1", "q2", "q3", "q4"],
+      "title": "Minimizable DFA (Multiple final states - have some bugs)",
+      "states": ["q0", "q1", "q2", "q3", "q4", "q5"],
       "symbols": ["0", "1"],
       "initial_state": "q0",
-      "final_state": ["q4"],
+      "final_state": ["q1", "q2", "q4"],
       "transitions": {
-        "q0": {
-          "0": ["q1"],
-          "1": ["q3"]
+        "q4": {
+          "0": ["q2"],
+          "1": ["q5"]
+        },
+        "q3": {
+          "0": ["q0"],
+          "1": ["q4"]
         },
         "q1": {
           "0": ["q2"],
-          "1": ["q4"]
+          "1": ["q5"]
+        },
+        "q5": {
+          "0": ["q5"],
+          "1": ["q5"]
         },
         "q2": {
-          "0": ["q1"],
-          "1": ["q4"]
-        },
-        "q3": {
           "0": ["q2"],
-          "1": ["q4"]
+          "1": ["q5"]
         },
-        "q4": {
-          "0": ["q4"],
-          "1": ["q4"]
+        "q0": {
+          "0": ["q3"],
+          "1": ["q1"]
         }
       }
     });

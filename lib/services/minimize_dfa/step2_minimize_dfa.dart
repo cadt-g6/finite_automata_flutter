@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
 
 class Step2MinimizeDfa {
-  Step2MinimizeDfa(this.fa) : assert(fa.finalState.length == 1);
+  Step2MinimizeDfa(this.fa);
   final FaModel fa;
 
   Set<String>? mergedEqualStates;
@@ -18,6 +18,8 @@ class Step2MinimizeDfa {
     // {q1,q2,q3, q0, q4}
     final Set<String> markedSets = firstItrResult[0];
     final Set<String> statesSets = firstItrResult[1];
+
+    print("V1 MARKED: $markedSets");
 
     // 2nd next iteration
     mergedEqualStates = findEqualStates(markedSets, statesSets);
@@ -35,10 +37,15 @@ class Step2MinimizeDfa {
     );
   }
 
+  bool allInFinalState(Set<String> state) {
+    return state.where((e) => fa.finalState.contains(e)).length == state.length;
+  }
+
   List<Set<String>> firstIteration() {
     final Set<String> markedSets = {};
     final Set<String> statesSets = {};
 
+    print("ONCE: ${fa.finalState}");
     for (String stateR in fa.states) {
       for (String stateC in fa.states) {
         if (stateR != stateC) {
@@ -46,12 +53,18 @@ class Step2MinimizeDfa {
           String states = FaHelper.constructStates(sets);
           statesSets.add(states);
 
-          if (sets.contains(fa.finalState.first)) {
-            markedSets.add(states);
+          for (String fstate in fa.finalState) {
+            if (sets.contains(fstate)) {
+              if (!allInFinalState(sets)) {
+                markedSets.add(states);
+              }
+            }
           }
         }
       }
     }
+
+    print("FIRST: $markedSets");
 
     return [markedSets, statesSets];
   }

@@ -9,6 +9,7 @@ class MinimizeDFAService {
 
   FaModel minialDFA() {
     fa = removeNoneAccessibleStates(fa);
+    fa = step2(fa);
     return fa;
   }
 
