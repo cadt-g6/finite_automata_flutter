@@ -26,7 +26,7 @@ class _MinimizeDFAScreenState extends State<MinimizeDFAScreen> {
   @override
   void initState() {
     service = MinimizeDFAService(widget.fa);
-    step1 = service.removeNoneAccessibleStates(widget.fa);
+    step1 = service.step1(widget.fa);
     step2 = service.step2(step1);
     super.initState();
   }

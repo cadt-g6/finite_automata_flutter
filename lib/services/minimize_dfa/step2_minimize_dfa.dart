@@ -9,6 +9,8 @@ class Step2MinimizeDfa {
 
   Set<String>? mergedEqualStates;
 
+  // Merge equal state:
+  // Start with first interation & next interation...
   FaModel exec() {
     mergedEqualStates = null;
 
@@ -202,4 +204,14 @@ class Step2MinimizeDfa {
 
     return newDFAStates;
   }
+}
+
+class MinimizeDFA {
+  final String deletedState;
+  final String merged;
+  final FaModel faModel;
+
+  MinimizeDFA(this.deletedState, this.merged, this.faModel);
+
+  exec() {}
 }
