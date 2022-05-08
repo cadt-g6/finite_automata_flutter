@@ -205,13 +205,3 @@ class Step2MinimizeDfa {
     return newDFAStates;
   }
 }
-
-class MinimizeDFA {
-  final String deletedState;
-  final String merged;
-  final FaModel faModel;
-
-  MinimizeDFA(this.deletedState, this.merged, this.faModel);
-
-  exec() {}
-}

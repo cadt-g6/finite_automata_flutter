@@ -5,23 +5,26 @@ class Step1MinimizeDfa {
   Step1MinimizeDfa(this.fa);
   final FaModel fa;
 
+  // Remove none accessible states
   FaModel exec() {
-    return removeNoneAccessibleStates(fa);
-  }
+    Set<String> initialNextStates = findNextStateFromSingleState(fa.startState);
+    Set<String> accessibleStates = {fa.startState, ...initialNextStates};
+    Set<String> remainStates = initialNextStates;
 
-  FaModel removeNoneAccessibleStates(FaModel _fa) {
-    Set<String> accessibleStates = findAccessibleStates();
+    while (remainStates.isNotEmpty) {
+      Set<String> nextStates = findNextStates(remainStates);
 
-    Map<String, Map<String, List<String>>> transition = {};
-    _fa.transitions.forEach((key, value) {
-      if (accessibleStates.contains(key)) {
-        transition[key] = value;
-      }
-    });
+      // remove if it already accessible before adding to remain
+      nextStates.removeWhere((element) => accessibleStates.contains(element));
+      accessibleStates.addAll(nextStates);
 
-    return _fa.copyWith(
-      states: accessibleStates.toList(),
-      transitions: transition,
+      remainStates.clear();
+      remainStates.addAll(nextStates);
+    }
+
+    return fa.copyWith(
+      states: FaHelper.sortStates(accessibleStates).toList(),
+      transitions: {...fa.transitions}..removeWhere((key, value) => !accessibleStates.contains(key)),
     );
   }
 
@@ -34,40 +37,10 @@ class Step1MinimizeDfa {
     Set<String> states,
   ) {
     Set<String> nextStates = {};
-
     for (String state in states) {
-      Set<String> _nextStatesPerState = findNextStateFromSingleState(state);
-      nextStates.addAll(_nextStatesPerState);
+      Set<String> _next = findNextStateFromSingleState(state);
+      nextStates.addAll(_next);
     }
-
     return nextStates;
-  }
-
-  bool isAllAccessible(Set<String> accessibleStates, Set<String> states) {
-    Iterable<bool> result = states.map((state) => accessibleStates.contains(state));
-    String t = states.map((e) => true.toString()).join(",");
-    String b = result.map((e) => "$e").join(",");
-    return t == b;
-  }
-
-  Set<String> findAccessibleStates() {
-    Set<String> accessibleStates = {fa.startState};
-    Set<String> states = findNextStateFromSingleState(fa.startState);
-    Set<String> setStatesFounds = {};
-
-    while (!isAllAccessible(states, accessibleStates)) {
-      accessibleStates.addAll(states);
-      states = findNextStates(states);
-
-      String found = states.join(",");
-      if (setStatesFounds.contains(found)) {
-        break;
-      } else {
-        setStatesFounds.add(found);
-      }
-    }
-
-    accessibleStates.addAll(states);
-    return FaHelper.sortStates(accessibleStates);
   }
 }

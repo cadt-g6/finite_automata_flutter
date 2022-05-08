@@ -47,21 +47,10 @@ void main() {
     }));
 
     test('#findAccessibleStates: it return accessibleStates without q3 since it\'s not accessible', () {
-      // Old DFA state
+      final newFa = service.exec();
       expect("q0,q1,q2,q3,q4,q5,q6,q7", service.fa.states.join(","));
+      expect("q7,q1,q4,q2,q5,q3,q0,q6", service.fa.transitions.keys.join(","));
 
-      // Accessible states
-      final accessibleStates = service.findAccessibleStates();
-      expect("q0,q1,q2,q4,q5,q6,q7", accessibleStates.join(","));
-    });
-
-    test('#removeNoneAccessibleStates: it assign new value to transition & states', () {
-      final newFa = service.removeNoneAccessibleStates(service.fa);
-
-      // Old DFA
-      expect("q0,q1,q2,q3,q4,q5,q6,q7", service.fa.states.join(","));
-
-      // New DFA
       expect("q0,q1,q2,q4,q5,q6,q7", newFa.states.join(","));
       expect("q7,q1,q4,q2,q5,q0,q6", newFa.transitions.keys.join(","));
     });
@@ -103,12 +92,43 @@ void main() {
     }));
 
     test('#exec: it return states that all of them are accessible', () {
-      // Old DFA states
-      expect("q0,q3,q4,q2,q5,q1", service.fa.transitions.keys.join(","));
-
-      // New DFA states
       final newFa = service.exec();
-      expect("q0,q3,q4,q2,q5,q1", newFa.transitions.keys.join(","));
+      expect("q0,q1,q2,q3,q4,q5", service.fa.states.join(","));
+      expect("q0,q1,q2,q3,q4,q5", newFa.states.join(","));
+    });
+  });
+
+  group('Step1MinimizeDfa: All state are accessible', () {
+    final service = Step1MinimizeDfa(FaModel.fromJson({
+      "title": "Finite Automata",
+      "states": ["q0", "q1", "q2", "q3"],
+      "symbols": ["0", "1"],
+      "start_state": "q0",
+      "final_states": ["q3"],
+      "transitions": {
+        "q0": {
+          "0": ["q1"],
+          "1": ["q0"]
+        },
+        "q1": {
+          "0": ["q2"],
+          "1": ["q0"]
+        },
+        "q2": {
+          "0": ["q3"],
+          "1": ["q0"]
+        },
+        "q3": {
+          "0": ["q3"],
+          "1": ["q3"]
+        }
+      }
+    }));
+
+    test('#exec: it return states that all of them are accessible', () {
+      final newFa = service.exec();
+      expect("q0,q1,q2,q3", service.fa.states.join(","));
+      expect("q0,q1,q2,q3", newFa.states.join(","));
     });
   });
 }
