@@ -65,7 +65,7 @@ class _MinimizeDFAScreenState extends State<MinimizeDFAScreen> {
             fa: step2,
             appendItems: [
               buildText(
-                "Equal States: ${toSentence(service.cachedStep2Service?.mergedEqualStates?.mapIndexed((index, element) => "q$index': {$element}").toList() ?? [])}",
+                "Equal States: ${toSentence(service.cachedStep2Service?.nextInteration.mergedEqualStates?.mapIndexed((index, element) => "q$index': {$element}").toList() ?? [])}",
               ),
             ],
           ),

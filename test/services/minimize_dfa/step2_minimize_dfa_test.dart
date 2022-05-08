@@ -88,8 +88,8 @@ void main() {
     }));
 
     test('#firstIteration: it return all marked states from first iteration', () {
-      final result = service.firstIteration();
-      final Set<String> markedSets = result[0];
+      service.firstInteration.exec();
+      Set<String> markedSets = service.firstInteration.markedSets;
       expect(
         "q0,q1 | q0,q2 | q0,q4 | q1,q3 | q1,q5 | q2,q3 | q2,q5 | q3,q4 | q4,q5",
         markedSets.join(" | "),
