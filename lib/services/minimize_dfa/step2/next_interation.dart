@@ -1,7 +1,5 @@
 import 'package:finite_automata_flutter/helpers/fa_helper.dart';
 import 'package:finite_automata_flutter/models/fa_model.dart';
-import 'package:flutter/foundation.dart';
-import 'package:collection/collection.dart';
 
 class NextInteration {
   final FaModel fa;
@@ -12,40 +10,57 @@ class NextInteration {
   String? startState;
   List<String>? finalStates;
 
-  bool allInFinalState(Set<String> state) {
-    return state.where((e) => fa.finalStates.contains(e)).length == state.length;
+  void exec(Set<String> _markedSets, Set<String> _statesSets) {
+    Set<String> nextMarkedSets = getNextMarkedSets(_markedSets, _statesSets);
+    Set<String> equalPairStates = {..._statesSets}..removeAll(nextMarkedSets);
+
+    mergedEqualStates = mergeEqualStates(equalPairStates);
+    List<dynamic> result = equalStatesToDfaInfos(mergedEqualStates!);
+
+    transitions = result[0];
+    startState = result[1];
+    finalStates = result[2];
   }
 
-  void exec(Set<String> markedSets, Set<String> statesSets) {
-    mergedEqualStates = findEqualStates(markedSets, statesSets);
-    final nextItrResult = getNewTransitionsInfoWith(mergedEqualStates!);
+  Set<String> getNextMarkedSets(Set<String> markedSets, Set<String> statesSets) {
+    // Found once but result not yet found or still in remain states
+    Set<String> tryOnce = {};
+    Set<String> remainStatesSets = {...statesSets}..removeWhere((state) => markedSets.contains(state));
 
-    transitions = nextItrResult[0];
-    startState = nextItrResult[1];
-    finalStates = nextItrResult[2];
-  }
+    while (remainStatesSets.isNotEmpty) {
+      String _statesSets = remainStatesSets.last;
+      remainStatesSets.remove(_statesSets);
 
-  Set<String> findEqualStates(Set<String> markedSets, Set<String> statesSets) {
-    markedSets = findNextMarkedSets(markedSets, statesSets);
+      for (String symbol in fa.symbols) {
+        Set<String> nextStates = nextStatesByASymbol(_statesSets.split(",").toSet(), symbol);
+        String nextStatesStr = FaHelper.constructStates(nextStates);
 
-    // {q1,q2, q1,q3, q2,q3}
-    Set<String> equalPairStates = statesSets..removeAll(markedSets);
-
-    // {q1,q2,q3, q0, q4}
-    Set<String> mergedEqualStates = mergeEqualStates(equalPairStates);
-
-    if (kDebugMode) {
-      print("ALL PAIR: $statesSets");
-      print("ALL MARKED: $markedSets");
-      print("ALL EQUAL: $equalPairStates");
-      print("NEW STATES GROUP: ${mergedEqualStates.mapIndexed((index, element) => "q$index': $element")}");
-      print("\n");
+        // have found once & marked
+        if (!remainStatesSets.contains(nextStatesStr) && markedSets.contains(nextStatesStr)) {
+          markedSets.add(_statesSets);
+        } else if (!tryOnce.contains(_statesSets)) {
+          remainStatesSets.add(nextStatesStr);
+          tryOnce.add(_statesSets);
+        }
+      }
     }
 
-    return mergedEqualStates;
+    return markedSets;
   }
 
-  List<dynamic> getNewTransitionsInfoWith(Set<String> mergedEqualStates) {
+  // states: {q1,q2}, symbol: a
+  // => {q4,q6}
+  Set<String> nextStatesByASymbol(Set<String> states, String symbol) {
+    Set<String> nextStates = {};
+    for (String state in states) {
+      Set<String>? result = fa.transitions[state]?[symbol]?.toSet();
+      if (result != null) nextStates.addAll(result);
+    }
+    return nextStates;
+  }
+
+  /// => [transitions, startState, finalStates]
+  List<dynamic> equalStatesToDfaInfos(Set<String> mergedEqualStates) {
     Map<String, Map<String, List<String>>> transitions = {};
     String startState = "";
     List<String> finalStates = [];
@@ -55,9 +70,7 @@ class NextInteration {
       Set<String> states = statesStr.split(",").toSet();
 
       String key = "q$i'";
-      if (transitions[key] == null) {
-        transitions[key] = {};
-      }
+      if (transitions[key] == null) transitions[key] = {};
 
       for (String symbol in fa.symbols) {
         Set<String> nextStatesList = {};
@@ -74,9 +87,7 @@ class NextInteration {
       }
 
       // find startState
-      if (states.contains(fa.startState)) {
-        startState = key;
-      }
+      if (states.contains(fa.startState)) startState = key;
 
       // find finalStates
       for (String state in fa.finalStates) {
@@ -91,44 +102,6 @@ class NextInteration {
       startState,
       finalStates,
     ];
-  }
-
-  Set<String> findNextMarkedSets(Set<String> markedSets, Set<String> statesSets) {
-    Set<String> newMarkedSets = {...markedSets};
-    Set<String> foundStatesSets = {};
-
-    // Try once but not yet in foundStatesSets.
-    Set<String> tryOnce = {};
-
-    while (foundStatesSets.length < statesSets.length) {
-      for (String statesStr in statesSets) {
-        Set<String> states = statesStr.split(",").toSet();
-        foundStatesSets.add(statesStr);
-        for (String symbol in fa.symbols) {
-          Set<String> nextStates = nextStatesByASymbol(states, symbol);
-          String nextStatesStr = FaHelper.constructStates(nextStates);
-          if (foundStatesSets.contains(nextStatesStr) && newMarkedSets.contains(nextStatesStr)) {
-            newMarkedSets.add(statesStr);
-          } else if (!tryOnce.contains(statesStr)) {
-            foundStatesSets.remove(nextStatesStr);
-            tryOnce.add(statesStr);
-          }
-        }
-      }
-    }
-
-    return newMarkedSets;
-  }
-
-  // states: {q1,q2}, symbol: a
-  // => {q4,q6}
-  Set<String> nextStatesByASymbol(Set<String> states, String symbol) {
-    Set<String> nextStates = {};
-    for (String state in states) {
-      Set<String>? result = fa.transitions[state]?[symbol]?.toSet();
-      if (result != null) nextStates.addAll(result);
-    }
-    return nextStates;
   }
 
   // equal = {"q1,q2", "q1,q3", "q2,q3"}
@@ -152,15 +125,15 @@ class NextInteration {
       equalPairsGroup.add(FaHelper.constructStates(group));
     }
 
-    Set<String> newDFAStates = {...equalPairsGroup};
-    Set<String> merged = equalPairsGroup.join(",").split(",").toSet();
-
+    // q0,q4, q1,q7, q3,q5, which missing q2, q6. let's add them:
+    Set<String> newStatesWithEqualCombined = {...equalPairsGroup};
+    Set<String> equalStates = equalPairsGroup.join(",").split(",").toSet();
     for (String state in fa.states) {
-      if (!merged.contains(state)) {
-        newDFAStates.add(state);
+      if (!equalStates.contains(state)) {
+        newStatesWithEqualCombined.add(state);
       }
     }
 
-    return newDFAStates;
+    return newStatesWithEqualCombined;
   }
 }

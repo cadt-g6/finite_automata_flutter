@@ -7,12 +7,12 @@ class Step1MinimizeDfa {
 
   // Remove none accessible states
   FaModel exec() {
-    Set<String> initialNextStates = findNextStateFromSingleState(fa.startState);
+    Set<String> initialNextStates = FaHelper.findNextStateFromSingleState(fa.startState, fa);
     Set<String> accessibleStates = {fa.startState, ...initialNextStates};
     Set<String> remainStates = initialNextStates;
 
     while (remainStates.isNotEmpty) {
-      Set<String> nextStates = findNextStates(remainStates);
+      Set<String> nextStates = FaHelper.findNextStates(remainStates, fa);
 
       // remove if it already accessible before adding to remain
       nextStates.removeWhere((element) => accessibleStates.contains(element));
@@ -26,21 +26,5 @@ class Step1MinimizeDfa {
       states: FaHelper.sortStates(accessibleStates).toList(),
       transitions: {...fa.transitions}..removeWhere((key, value) => !accessibleStates.contains(key)),
     );
-  }
-
-  Set<String> findNextStateFromSingleState(String state) {
-    List<String>? states = fa.transitions[state]?.values.map((e) => e.join(",")).join(",").split(",");
-    return states?.toSet() ?? {};
-  }
-
-  Set<String> findNextStates(
-    Set<String> states,
-  ) {
-    Set<String> nextStates = {};
-    for (String state in states) {
-      Set<String> _next = findNextStateFromSingleState(state);
-      nextStates.addAll(_next);
-    }
-    return nextStates;
   }
 }
