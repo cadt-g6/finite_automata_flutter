@@ -7,6 +7,8 @@ part of 'fa_model.dart';
 // **************************************************************************
 
 abstract class _$FaModelCWProxy {
+  FaModel createdAt(DateTime? createdAt);
+
   FaModel finalStates(List<String> finalStates);
 
   FaModel startState(String startState);
@@ -19,6 +21,8 @@ abstract class _$FaModelCWProxy {
 
   FaModel transitions(Map<String, Map<String, List<String>>> transitions);
 
+  FaModel updatedAt(DateTime? updatedAt);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `FaModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -26,12 +30,14 @@ abstract class _$FaModelCWProxy {
   /// FaModel(...).copyWith(id: 12, name: "My name")
   /// ````
   FaModel call({
+    DateTime? createdAt,
     List<String>? finalStates,
     String? startState,
     List<String>? states,
     List<String>? symbols,
     String? title,
     Map<String, Map<String, List<String>>>? transitions,
+    DateTime? updatedAt,
   });
 }
 
@@ -40,6 +46,9 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
   final FaModel _value;
 
   const _$FaModelCWProxyImpl(this._value);
+
+  @override
+  FaModel createdAt(DateTime? createdAt) => this(createdAt: createdAt);
 
   @override
   FaModel finalStates(List<String> finalStates) =>
@@ -62,6 +71,9 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
       this(transitions: transitions);
 
   @override
+  FaModel updatedAt(DateTime? updatedAt) => this(updatedAt: updatedAt);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `FaModel(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -70,14 +82,20 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
   /// FaModel(...).copyWith(id: 12, name: "My name")
   /// ````
   FaModel call({
+    Object? createdAt = const $CopyWithPlaceholder(),
     Object? finalStates = const $CopyWithPlaceholder(),
     Object? startState = const $CopyWithPlaceholder(),
     Object? states = const $CopyWithPlaceholder(),
     Object? symbols = const $CopyWithPlaceholder(),
     Object? title = const $CopyWithPlaceholder(),
     Object? transitions = const $CopyWithPlaceholder(),
+    Object? updatedAt = const $CopyWithPlaceholder(),
   }) {
     return FaModel(
+      createdAt: createdAt == const $CopyWithPlaceholder()
+          ? _value.createdAt
+          // ignore: cast_nullable_to_non_nullable
+          : createdAt as DateTime?,
       finalStates:
           finalStates == const $CopyWithPlaceholder() || finalStates == null
               ? _value.finalStates
@@ -105,6 +123,10 @@ class _$FaModelCWProxyImpl implements _$FaModelCWProxy {
               ? _value.transitions
               // ignore: cast_nullable_to_non_nullable
               : transitions as Map<String, Map<String, List<String>>>,
+      updatedAt: updatedAt == const $CopyWithPlaceholder()
+          ? _value.updatedAt
+          // ignore: cast_nullable_to_non_nullable
+          : updatedAt as DateTime?,
     );
   }
 }
@@ -136,6 +158,12 @@ FaModel _$FaModelFromJson(Map<String, dynamic> json) => FaModel(
                   k, (e as List<dynamic>).map((e) => e as String).toList()),
             )),
       ),
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$FaModelToJson(FaModel instance) => <String, dynamic>{
@@ -144,5 +172,7 @@ Map<String, dynamic> _$FaModelToJson(FaModel instance) => <String, dynamic>{
       'symbols': instance.symbols,
       'start_state': instance.startState,
       'final_states': instance.finalStates,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
       'transitions': instance.transitions,
     };

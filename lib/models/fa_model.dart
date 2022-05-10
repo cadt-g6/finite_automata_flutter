@@ -11,6 +11,8 @@ class FaModel {
   final List<String> symbols;
   final String startState;
   final List<String> finalStates;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   /// ```dart
   /// final transitions = {
@@ -47,6 +49,8 @@ class FaModel {
     required this.startState,
     required this.finalStates,
     required this.transitions,
+    required this.createdAt,
+    required this.updatedAt,
   }) {
     validateSymbols();
   }

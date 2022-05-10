@@ -68,6 +68,7 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
 
   Future<void> onSaveFa() async {
     String? message;
+    final now = DateTime.now();
 
     if (basicInfosFormKey.currentState?.validate() == true && transitionFormKey.currentState?.validate() == true) {
       if (faModel?.firebaseDocumentId != null) {
@@ -80,6 +81,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
             startState: startState!,
             finalStates: finalStates,
             transitions: transitions,
+            createdAt: faModel?.createdAt ?? now,
+            updatedAt: now,
           ),
         );
         message = "Updated * docID: ${faModel?.firebaseDocumentId}";
@@ -91,6 +94,8 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
           startState: startState!,
           finalStates: finalStates,
           transitions: transitions,
+          createdAt: now,
+          updatedAt: now,
         ));
         faModel = result;
         message = "Created * docID: ${faModel?.firebaseDocumentId}";

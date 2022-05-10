@@ -1,5 +1,6 @@
 import 'package:finite_automata_flutter/models/fa_model.dart';
 import 'package:finite_automata_flutter/services/minimize_dfa/step2_minimize_dfa.dart';
+import 'package:finite_automata_flutter/services/minimize_dfa_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -35,10 +36,10 @@ void main() {
       expect("q0',q1',q2',q3'", result.states.join(","));
       expect("q0,q1,q2,q3", service.nextInteration.mergedEqualStates?.join(","));
     });
-  });
+  }, skip: true);
 
   group('Step2MinimizeDfa: Single final state', () {
-    final service = Step2MinimizeDfa(FaModel.fromJson({
+    final service = MinimizeDFAService(FaModel.fromJson({
       "title": "Minimizable  FA (Some states are not accessible)",
       "states": ["q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7"],
       "symbols": ["a", "b"],
@@ -81,11 +82,13 @@ void main() {
     }));
 
     test('it return 4 new states & has 3 equal states', () {
-      final result = service.exec();
+      final fa1 = service.step1(service.fa);
+      final result = service.step2(fa1);
+
       expect("q0',q1',q2',q3',q4'", result.states.join(","));
       expect(
         '{q0,q4}, {q1,q7}, {q3,q5}, {q2}, {q6}',
-        service.nextInteration.mergedEqualStates?.map((e) => "{$e}").join(", "),
+        service.cachedStep2Service?.nextInteration.mergedEqualStates?.map((e) => "{$e}").join(", "),
       );
     });
   });
