@@ -287,7 +287,13 @@ class _FaDetailScreenState extends State<FaDetailScreen> {
                 for (String symbol in symbols)
                   TextFormField(
                     initialValue: transitions[state]?[symbol]?.join(","),
-                    validator: (states) => validateMultipleStates(states),
+                    validator: (states) {
+                      if (states == null || states.isEmpty) {
+                        return null;
+                      } else {
+                        return validateMultipleStates(states);
+                      }
+                    },
                     onChanged: (states) {
                       if (transitions[state] == null) transitions[state] = {};
                       if (validateMultipleStates(states) == null) {
